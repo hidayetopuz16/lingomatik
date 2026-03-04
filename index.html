@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LİNGOMATİK 🚀</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+
+        :root {
+
+            --bg-color: #05070a;
+
+            --card-bg: rgba(255, 255, 255, 0.05);
+
+            --text-color: #010100;
+
+            --neon-blue: #00f7ff;
+
+            --neon-pink: #ff00e0;
+
+            --neon-yellow: #fffa65;
+
+            --neon-green: #39ff14;
+
+            --star-opacity: 0.2;
+
+        }
+
+
+
+        body.light-mode {
+
+            --bg-color: #f0f2f5;
+
+            --card-bg: #d5cfcf;
+
+            --text-color: #1a1a1a;
+
+            --neon-blue: #0077ff;
+
+            --neon-pink: #d600bc;
+
+            --neon-yellow: #f1c40f;
+
+            --star-opacity: 0.05;
+
+        }
+
+
+
+        body {
+
+            background-image: url('images/arkaplan.png');
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-attachment: fixed;
+
+            background-repeat: no-repeat;
+
+            background-color: var(--bg-color);
+
+            color: var(--text-color);
+
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+            display: flex; flex-direction: column; align-items: center;
+
+            min-height: 100vh; margin: 0; overflow-x: hidden;
+
+            transition: background 0.4s, color 0.4s;
+
+        }
+
+
+
+        .stars {
+
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+
+            z-index: -1;
+
+            background: radial-gradient(var(--text-color), transparent 1%) 0 0/50px 50px;
+
+            opacity: var(--star-opacity);
+
+            pointer-events: none;
+
+        }
+
+
+
+        .neon-box {
+
+            border: 4px solid var(--neon-blue);
+
+            padding: 40px; border-radius: 30px; text-align: center;
+
+            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 15px var(--neon-blue);
+
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px);
+
+            max-width: 650px; margin: auto; margin-top: 100px;
+
+            animation: pulse 2s infinite alternate; z-index: 10; position: relative;
+
+        }
+
+
+
+        .neon-box p {
+
+            color: #ffffff !important; font-size: 1.2rem; font-weight: 500;
+
+            line-height: 1.6; margin-bottom: 20px; text-shadow: 2px 2px 8px rgba(0, 0, 0, 1);
+
+        }
+
+
+
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.02); } }
+
+        h1 { font-size: 3.5rem; color: var(--neon-pink); text-shadow: 0 0 20px var(--neon-pink); margin-bottom: 15px; }
+
+
+
+        #top-bar {
+
+            display: none; width: 90%; max-width: 1100px;
+
+            justify-content: space-between; align-items: center;
+
+            margin-top: 80px; padding: 15px; background: rgba(5, 7, 10, 0.7);
+
+            border-radius: 20px; border: 1px solid var(--neon-blue); backdrop-filter: blur(10px);
+
+        }
+
+
+
+        #level-indicator { color: var(--neon-blue); font-size: 1.4rem; margin: 0; text-transform: uppercase; }
+
+
+
+        .nav-btn { padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; border: 2px solid; }
+
+        .skip-btn { border-color: var(--neon-yellow); color: var(--neon-yellow); background: transparent; }
+
+        .back-btn { border-color: #ff4040; color: #ff4040; background: transparent; }
+
+
+
+        #game-area {
+
+            display: none; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+            gap: 20px; width: 90%; max-width: 1200px; padding: 40px 0;
+
+        }
+
+
+
+        .card {
+
+            background: rgba(255, 255, 255, 0.1); border: 2px solid var(--neon-blue);
+
+            backdrop-filter: blur(10px); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer;
+
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center;
+
+        }
+
+
+
+        .card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,247,255,0.3); }
+
+        .card.discovered { border-color: var(--neon-pink); background: rgba(255, 0, 224, 0.1); }
+
+
+
+        .info-panel { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 0, 224, 0.3); width: 100%; animation: slideUp 0.4s; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+
+
+        #quiz-area {
+
+            display: none; width: 90%; max-width: 800px; margin: 40px auto;
+
+            background: rgba(0,0,0,0.8); border: 3px solid var(--neon-yellow);
+
+            border-radius: 30px; padding: 30px; text-align: center;
+
+        }
+
+        .quiz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+
+        .quiz-column { display: flex; flex-direction: column; gap: 10px; }
+
+        .quiz-item {
+
+            padding: 15px; background: rgba(255,255,255,0.1); border: 2px solid var(--neon-blue);
+
+            border-radius: 15px; cursor: pointer; font-size: 1.5rem; transition: 0.3s;
+
+        }
+
+        .quiz-item.selected { border-color: var(--neon-pink); background: rgba(255, 0, 224, 0.2); }
+
+        .quiz-item.correct { border-color: var(--neon-green); background: rgba(57, 255, 20, 0.2); pointer-events: none; }
+
+        
+
+        /* Yanlış seçim için eklenen stil */
+
+        .quiz-item.wrong { border-color: #ff4040; background: rgba(255, 64, 64, 0.3); animation: shake 0.3s; }
+
+        @keyframes shake {
+
+            0%, 100% { transform: translateX(0); }
+
+            25% { transform: translateX(-8px); }
+
+            75% { transform: translateX(8px); }
+
+        }
+
+
+
+        #next-level-container { display: none; text-align: center; margin: 50px 0; }
+
+        #congrats-text {
+
+            color: var(--neon-green); font-weight: bold; font-size: 2.2rem; margin-bottom: 25px; padding: 15px 25px;
+
+            background: rgba(0, 0, 0, 0.6); border-radius: 15px; display: inline-block;
+
+            text-shadow: 2px 2px 10px rgba(0,0,0,1), 0 0 20px var(--neon-green); border: 1px solid rgba(57, 255, 20, 0.3);
+
+        }
+
+
+
+        .next-btn {
+
+            background: var(--neon-pink); color: white; font-size: 1.5rem; padding: 15px 60px;
+
+            border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s;
+
+        }
+
+        .hidden { display: none !important; }
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <button id="theme-toggle" style="position:fixed; top:20px; right:20px; z-index:1000;" onclick="toggleTheme()">🌙 MOD DEĞİŞTİR</button>
+
+    <div class="stars"></div>
+
+
+
+    <div id="intro" class="neon-box">
+
+        <h1>LİNGOMATİK KELİME KARTLARI 🚀</h1>
+
+        <p>İngilizce öğrenmeye yeni başlayanlar ve çocuklar için tasarlanmış eğlenceli bir kelime serüvenine hoş geldin!</p>
+
+        <p>25 farklı kategoride 300 temel kelimeyi görsellerle keşfedeceksin. Her bölüm sonunda seni bekleyen mini eşleştirme testleriyle bilgilerini pekiştirebilirsin.</p>
+
+        <p><strong>Hazırsan, kelime yolculuğu başlasın! ✨</strong></p>
+
+        <button class="next-btn" onclick="startMission()" style="background: var(--neon-blue); margin-top: 10px;">ÖĞRENMEYE BAŞLA 🚀</button>
+
+    </div>
+
+
+
+    <div id="top-bar">
+
+        <button id="btn-back" class="nav-btn back-btn" onclick="prevLevel()">◀ GERİ</button>
+
+        <h2 id="level-indicator">KATEGORİ</h2>
+
+        <button class="nav-btn skip-btn" onclick="skipLevel()">ATLA ⏭️</button>
+
+    </div>
+
+
+
+    <div id="game-area"></div>
+
+
+
+    <div id="quiz-area">
+
+        <h2 style="color: var(--neon-yellow);">🧠 KELİME EŞLEŞTİRME TESTİ!</h2>
+
+        <p>Doğru eşleri bul bakalım!</p>
+
+        <div class="quiz-grid">
+
+            <div id="quiz-emojis" class="quiz-column"></div>
+
+            <div id="quiz-words" class="quiz-column"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <div id="next-level-container">
+
+        <p id="congrats-text"></p>
+
+        <br>
+
+        <button id="btn-quiz-start" class="next-btn" onclick="showQuiz()" style="background: var(--neon-yellow); color: #000;">KENDİNİ DENE! 🧠</button>
+
+        <button id="btn-next-level" class="next-btn hidden" onclick="nextLevel()">SIRADAKİ GÖREV ⬇️</button>
+
+    </div>
+
+
+
+<script>
+
+const levels = {
+
+1: { title: "🐾 HAYVANLAR = ANIMALS", data: [
+
+{ en: "Lion", tr: "Aslan", emoji: "🦁", sEn: "The lion is the king.", sTr: "Aslan kraldır." },
+
+{ en: "Cat", tr: "Kedi", emoji: "🐱", sEn: "The cat is sleeping.", sTr: "Kedi uyuyor." },
+
+{ en: "Dog", tr: "Köpek", emoji: "🐶", sEn: "The dog is barking.", sTr: "Köpek havlıyor." },
+
+{ en: "Monkey", tr: "Maymun", emoji: "🐒", sEn: "Monkeys love bananas.", sTr: "Maymunlar muz sever." },
+
+{ en: "Elephant", tr: "Fil", emoji: "🐘", sEn: "Elephants are huge.", sTr: "Filler devasadır." },
+
+{ en: "Rabbit", tr: "Tavşan", emoji: "🐰", sEn: "The rabbit is fast.", sTr: "Tavşan hızlıdır." },
+
+{ en: "Bird", tr: "Kuş", emoji: "🐦", sEn: "Birds can fly.", sTr: "Kuşlar uçabilir." },
+
+{ en: "Fish", tr: "Balık", emoji: "🐟", sEn: "Fish live in water.", sTr: "Balıklar suda yaşar." },
+
+{ en: "Horse", tr: "At", emoji: "🐎", sEn: "I like riding horses.", sTr: "Ata binmeyi severim." },
+
+{ en: "Bee", tr: "Arı", emoji: "🐝", sEn: "Bees make honey.", sTr: "Arılar bal yapar." },
+
+{ en: "Frog", tr: "Kurbağa", emoji: "🐸", sEn: "The frog is green.", sTr: "Kurbağa yeşildir." },
+
+{ en: "Snake", tr: "Yılan", emoji: "🐍", sEn: "Be careful of snakes!", sTr: "Yılanlara dikkat et!" }
+
+]},
+
+2: { title: "🍎 MEYVELER = FRUITS", data: [
+
+{ en: "Apple", tr: "Elma", emoji: "🍎", sEn: "Red apple", sTr: "Kırmızı elma" },
+
+{ en: "Banana", tr: "Muz", emoji: "🍌", sEn: "Yellow banana", sTr: "Sarı muz" },
+
+{ en: "Strawberry", tr: "Çilek", emoji: "🍓", sEn: "Sweet strawberry", sTr: "Tatlı çilek" },
+
+{ en: "Orange", tr: "Portakal", emoji: "🍊", sEn: "Juicy orange", sTr: "Sulu portakal" },
+
+{ en: "Grape", tr: "Üzüm", emoji: "🍇", sEn: "Purple grapes", sTr: "Mor üzümler" },
+
+{ en: "Watermelon", tr: "Karpuz", emoji: "🍉", sEn: "Big watermelon", sTr: "Büyük karpuz" },
+
+{ en: "Pear", tr: "Armut", emoji: "🍐", sEn: "Green pear", sTr: "Yeşil armut" },
+
+{ en: "Cherry", tr: "Kiraz", emoji: "🍒", sEn: "Red cherry", sTr: "Kırmızı kiraz" },
+
+{ en: "Pineapple", tr: "Ananas", emoji: "🍍", sEn: "Tropical fruit", sTr: "Tropikal meyve" },
+
+{ en: "Peach", tr: "Şeftali", emoji: "🍑", sEn: "Soft peach", sTr: "Yumuşak şeftali" },
+
+{ en: "Kiwi", tr: "Kivi", emoji: "🥝", sEn: "Green kiwi", sTr: "Yeşil kivi" },
+
+{ en: "Lemon", tr: "Limon", emoji: "🍋", sEn: "Sour lemon", sTr: "Ekşi limon" }
+
+]},
+
+3: { title: "🌈 RENKLER = COLORS", data: [
+
+{ en: "Red", tr: "Kırmızı", emoji: "🔴", sEn: "Red car", sTr: "Kırmızı araba" },
+
+{ en: "Blue", tr: "Mavi", emoji: "🔵", sEn: "Blue sky", sTr: "Mavi gökyüzü" },
+
+{ en: "Green", tr: "Yeşil", emoji: "🟢", sEn: "Green leaf", sTr: "Yeşil yaprak" },
+
+{ en: "Yellow", tr: "Sarı", emoji: "🟡", sEn: "Yellow sun", sTr: "Sarı güneş" },
+
+{ en: "Pink", tr: "Pembe", emoji: "💗", sEn: "Pink flower", sTr: "Pembe çiçek" },
+
+{ en: "Orange", tr: "Turuncu", emoji: "🟠", sEn: "Orange fruit", sTr: "Turuncu meyve" },
+
+{ en: "Purple", tr: "Mor", emoji: "🟣", sEn: "Purple umbrella", sTr: "Mor şemsiye" },
+
+{ en: "White", tr: "Beyaz", emoji: "⚪", sEn: "White milk", sTr: "Beyaz süt" },
+
+{ en: "Black", tr: "Siyah", emoji: "⚫", sEn: "Black cat", sTr: "Siyah kedi" },
+
+{ en: "Brown", tr: "Kahverengi", emoji: "🟤", sEn: "Brown bear", sTr: "Kahverengi ayı" },
+
+{ en: "Grey", tr: "Gri", emoji: "🔘", sEn: "Grey cloud", sTr: "Gri bulut" },
+
+{ en: "Gold", tr: "Altın", emoji: "🟡", sEn: "Gold medal", sTr: "Altın madalya" }
+
+]},
+
+4: { title: "🏠 EŞYALAR = OBJECTS", data: [
+
+{ en: "House", tr: "Ev", emoji: "🏠", sEn: "Small house", sTr: "Küçük ev" },
+
+{ en: "Book", tr: "Kitap", emoji: "📖", sEn: "Read a book", sTr: "Kitap oku" },
+
+{ en: "Chair", tr: "Sandalye", emoji: "🪑", sEn: "Sit on chair", sTr: "Sandalyeye otur" },
+
+{ en: "Key", tr: "Anahtar", emoji: "🔑", sEn: "Gold key", sTr: "Altın anahtar" },
+
+{ en: "Bed", tr: "Yatak", emoji: "🛏️", sEn: "Soft bed", sTr: "Yumuşak yatak" },
+
+{ en: "Table", tr: "Masa", emoji: "🍱", sEn: "On the table", sTr: "Masanın üstünde" },
+
+{ en: "Clock", tr: "Saat", emoji: "⏰", sEn: "Tik tak", sTr: "Tik tak" },
+
+{ en: "Lamp", tr: "Lamba", emoji: "💡", sEn: "Bright lamp", sTr: "Parlak lamba" },
+
+{ en: "Door", tr: "Kapı", emoji: "🚪", sEn: "Open the door", sTr: "Kapıyı aç" },
+
+{ en: "Window", tr: "Pencere", emoji: "🪟", sEn: "Look out window", sTr: "Pencereden bak" },
+
+{ en: "Phone", tr: "Telefon", emoji: "📱", sEn: "Call me", sTr: "Beni ara" },
+
+{ en: "Computer", tr: "Bilgisayar", emoji: "💻", sEn: "Fast computer", sTr: "Hızlı bilgisayar" }
+
+]},
+
+5: { title: "💪 VÜCUDUMUZ = OUR BODY", data: [
+
+{ en: "Eye", tr: "Göz", emoji: "👁️", sEn: "Blue eyes", sTr: "Mavi gözler" },
+
+{ en: "Nose", tr: "Burun", emoji: "👃", sEn: "Smell this", sTr: "Bunu kokla" },
+
+{ en: "Mouth", tr: "Ağız", emoji: "👄", sEn: "Open your mouth", sTr: "Ağzını aç" },
+
+{ en: "Ear", tr: "Kulak", emoji: "👂", sEn: "Listen carefully", sTr: "Dikkatle dinle" },
+
+{ en: "Hand", tr: "El", emoji: "✋", sEn: "Wash your hands", sTr: "Ellerini yıka" },
+
+{ en: "Foot", tr: "Ayak", emoji: "🦶", sEn: "My foot hurts", sTr: "Ayağım acıyor" },
+
+{ en: "Arm", tr: "Kol", emoji: "💪", sEn: "Strong arm", sTr: "Güçlü kol" },
+
+{ en: "Leg", tr: "Bacak", emoji: "🦵", sEn: "Long legs", sTr: "Uzun bacaklar" },
+
+{ en: "Hair", tr: "Saç", emoji: "💇", sEn: "Long hair", sTr: "Uzun saç" },
+
+{ en: "Tooth", tr: "Diş", emoji: "🦷", sEn: "White teeth", sTr: "Beyaz dişler" },
+
+{ en: "Finger", tr: "Parmak", emoji: "☝️", sEn: "Ten fingers", sTr: "On parmak" },
+
+{ en: "Tongue", tr: "Dil", emoji: "👅", sEn: "Show your tongue", sTr: "Dilini göster" }
+
+]},
+
+6: { title: "👕 KIYAFETLER = CLOTHES", data: [
+
+{ en: "Hat", tr: "Şapka", emoji: "👒", sEn: "Nice hat", sTr: "Güzel şapka" },
+
+{ en: "Shoes", tr: "Ayakkabı", emoji: "👟", sEn: "Run shoes", sTr: "Koşu ayakkabısı" },
+
+{ en: "Shirt", tr: "Tişört", emoji: "👕", sEn: "Clean shirt", sTr: "Temiz tişört" },
+
+{ en: "Socks", tr: "Çorap", emoji: "🧦", sEn: "Warm socks", sTr: "Sıcak çoraplar" },
+
+{ en: "Dress", tr: "Elbise", emoji: "👗", sEn: "Beautiful dress", sTr: "Güzel elbise" },
+
+{ en: "Pants", tr: "Pantolon", emoji: "👖", sEn: "Long pants", sTr: "Uzun pantolon" },
+
+{ en: "Glasses", tr: "Gözlük", emoji: "👓", sEn: "Sun glasses", sTr: "Güneş gözlüğü" },
+
+{ en: "Gloves", tr: "Eldiven", emoji: "🧤", sEn: "Winter gloves", sTr: "Kış eldiveni" },
+
+{ en: "Scarf", tr: "Atkı", emoji: "🧣", sEn: "Red scarf", sTr: "Kırmızı atkı" },
+
+{ en: "Coat", tr: "Palto", emoji: "🧥", sEn: "Heavy coat", sTr: "Ağır palto" },
+
+{ en: "Skirt", tr: "Etek", emoji: "👗", sEn: "Short skirt", sTr: "Kısa etek" },
+
+{ en: "Belt", tr: "Kemer", emoji: "🎫", sEn: "Leather belt", sTr: "Deri kemer" }
+
+]},
+
+7: { title: "🔟 SAYILAR = NUMBERS", data: [
+
+{ en: "One", tr: "Bir", emoji: "1️⃣", sEn: "One sun", sTr: "Bir güneş" },
+
+{ en: "Two", tr: "İki", emoji: "2️⃣", sEn: "Two birds", sTr: "İki kuş" },
+
+{ en: "Three", tr: "Üç", emoji: "3️⃣", sEn: "Three cats", sTr: "Üç kedi" },
+
+{ en: "Four", tr: "Dört", emoji: "4️⃣", sEn: "Four cars", sTr: "Dört araba" },
+
+{ en: "Five", tr: "Beş", emoji: "5️⃣", sEn: "Five apples", sTr: "Beş elma" },
+
+{ en: "Six", tr: "Altı", emoji: "6️⃣", sEn: "Six balls", sTr: "Altı top" },
+
+{ en: "Seven", tr: "Yedi", emoji: "7️⃣", sEn: "Seven days", sTr: "Yedi gün" },
+
+{ en: "Eight", tr: "Sekiz", emoji: "8️⃣", sEn: "Eight books", sTr: "Sekiz kitap" },
+
+{ en: "Nine", tr: "Dokuz", emoji: "9️⃣", sEn: "Nine pencils", sTr: "Dokuz kalem" },
+
+{ en: "Ten", tr: "On", emoji: "🔟", sEn: "Ten fingers", sTr: "On parmak" },
+
+{ en: "Zero", tr: "Sıfır", emoji: "0️⃣", sEn: "Number zero", sTr: "Sıfır sayısı" },
+
+{ en: "Hundred", tr: "Yüz", emoji: "💯", sEn: "One hundred", sTr: "Yüz" }
+
+]},
+
+8: { title: "🚀 ULAŞIM = TRANSPORT", data: [
+
+{ en: "Car", tr: "Araba", emoji: "🚗", sEn: "Fast car", sTr: "Hızlı araba" },
+
+{ en: "Bus", tr: "Otobüs", emoji: "🚌", sEn: "School bus", sTr: "Okul otobüsü" },
+
+{ en: "Plane", tr: "Uçak", emoji: "✈️", sEn: "The plane flies", sTr: "Uçak uçar" },
+
+{ en: "Ship", tr: "Gemi", emoji: "🚢", sEn: "Big ship", sTr: "Büyük gemi" },
+
+{ en: "Bicycle", tr: "Bisiklet", emoji: "🚲", sEn: "Ride bicycle", sTr: "Bisiklete bin" },
+
+{ en: "Train", tr: "Tren", emoji: "🚂", sEn: "Steam train", sTr: "Buharlı tren" },
+
+{ en: "Truck", tr: "Kamyon", emoji: "🚚", sEn: "Large truck", sTr: "Büyük kamyon" },
+
+{ en: "Helicopter", tr: "Helikopter", emoji: "🚁", sEn: "Sky helicopter", sTr: "Gökyüzü helikopteri" },
+
+{ en: "Boat", tr: "Sandal", emoji: "🛶", sEn: "Little boat", sTr: "Küçük sandal" },
+
+{ en: "Motorcycle", tr: "Motosiklet", emoji: "🏍️", sEn: "Cool motor", sTr: "Havalı motor" },
+
+{ en: "Rocket", tr: "Roket", emoji: "🚀", sEn: "Fast rocket", sTr: "Hızlı roket" },
+
+{ en: "Tractor", tr: "Traktör", emoji: "🚜", sEn: "Farm tractor", sTr: "Çiftlik traktörü" }
+
+]},
+
+9: { title: "☁️ HAVA DURUMU = WEATHER", data: [
+
+{ en: "Sun", tr: "Güneş", emoji: "☀️", sEn: "Sunny day", sTr: "Güneşli gün" },
+
+{ en: "Cloud", tr: "Bulut", emoji: "☁️", sEn: "White cloud", sTr: "Beyaz bulut" },
+
+{ en: "Rain", tr: "Yağmur", emoji: "🌧️", sEn: "It is raining", sTr: "Yağmur yağıyor" },
+
+{ en: "Snow", tr: "Kar", emoji: "❄️", sEn: "Cold snow", sTr: "Soğuk kar" },
+
+{ en: "Wind", tr: "Rüzgar", emoji: "💨", sEn: "Strong wind", sTr: "Güçlü rüzgar" },
+
+{ en: "Storm", tr: "Fırtına", emoji: "⛈️", sEn: "Dark storm", sTr: "Karanlık fırtına" },
+
+{ en: "Rainbow", tr: "Gökkuşağı", emoji: "🌈", sEn: "Beautiful rainbow", sTr: "Güzel gökkuşağı" },
+
+{ en: "Moon", tr: "Ay", emoji: "🌙", sEn: "Night moon", sTr: "Gece ayı" },
+
+{ en: "Star", tr: "Yıldız", emoji: "⭐", sEn: "Bright star", sTr: "Parlak yıldız" },
+
+{ en: "Sky", tr: "Gökyüzü", emoji: "🌌", sEn: "Blue sky", sTr: "Mavi gökyüzü" },
+
+{ en: "Hot", tr: "Sıcak", emoji: "🔥", sEn: "Very hot", sTr: "Çok sıcak" },
+
+{ en: "Cold", tr: "Soğuk", emoji: "🥶", sEn: "So cold", sTr: "Çok soğuk" }
+
+]},
+
+10: { title: "🌌 UZAY = SPACE", data: [
+
+{ en: "Earth", tr: "Dünya", emoji: "🌍", sEn: "Our planet", sTr: "Bizim gezegenimiz" },
+
+{ en: "Moon", tr: "Ay", emoji: "🌙", sEn: "Moon is white", sTr: "Ay beyazdır" },
+
+{ en: "Alien", tr: "Uzaylı", emoji: "👽", sEn: "Green alien", sTr: "Yeşil uzaylı" },
+
+{ en: "Spaceship", tr: "Uzay Gemisi", emoji: "🛸", sEn: "UFO", sTr: "Tanımlanamayan uçan nesne" },
+
+{ en: "Astronaut", tr: "Astronot", emoji: "👨‍🚀", sEn: "Walk in space", sTr: "Uzayda yürü." },
+
+{ en: "Saturn", tr: "Satürn", emoji: "🪐", sEn: "Ring planet", sTr: "Halkalı gezegen" },
+
+{ en: "Telescope", tr: "Teleskop", emoji: "🔭", sEn: "Watch stars", sTr: "Yıldızları izle" },
+
+{ en: "Universe", tr: "Evren", emoji: "🌌", sEn: "Infinite universe", sTr: "Sonsuz evren" },
+
+{ en: "Mars", tr: "Mars", emoji: "🔴", sEn: "Red planet", sTr: "Kızıl gezegen" },
+
+{ en: "Star", tr: "Yıldız", emoji: "🌟", sEn: "Shining star", sTr: "Parlayan yıldız" },
+
+{ en: "Galaxy", tr: "Galaksi", emoji: "🌀", sEn: "Milky way", sTr: "Samanyolu" },
+
+{ en: "Comet", tr: "Kuyruklu Yıldız", emoji: "☄️", sEn: "Fast comet", sTr: "Hızlı kuyruklu yıldız" }
+
+]},
+11: { title: "🌍 ÜLKELER = COUNTRIES", data: [
+{ en: "Türkiye", tr: "Türkiye", emoji: "🇹🇷", sEn: "Turkey is beautiful.", sTr: "Türkiye güzeldir." },
+{ en: "England", tr: "İngiltere", emoji: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", sEn: "London is in England.", sTr: "Londra İngiltere'dedir." },
+{ en: "Germany", tr: "Almanya", emoji: "🇩🇪", sEn: "Germany is in Europe.", sTr: "Almanya Avrupa'dadır." },
+{ en: "France", tr: "Fransa", emoji: "🇫🇷", sEn: "France is famous for food.", sTr: "Fransa yemekleriyle ünlüdür." },
+{ en: "Italy", tr: "İtalya", emoji: "🇮🇹", sEn: "I love Italian pizza.", sTr: "İtalyan pizzasını severim." },
+{ en: "Spain", tr: "İspanya", emoji: "🇪🇸", sEn: "Spain is very sunny.", sTr: "İspanya çok güneşlidir." },
+{ en: "Japan", tr: "Japonya", emoji: "🇯🇵", sEn: "Japan is in Asia.", sTr: "Japonya Asya'dadır." },
+{ en: "China", tr: "Çin", emoji: "🇨🇳", sEn: "China has a big wall.", sTr: "Çin'in büyük bir seddi var." },
+{ en: "Brazil", tr: "Brezilya", emoji: "🇧🇷", sEn: "Brazil is in South America.", sTr: "Brezilya Güney Amerika'dadır." },
+{ en: "Canada", tr: "Kanada", emoji: "🇨🇦", sEn: "Canada is very cold.", sTr: "Kanada çok soğuktur." },
+{ en: "Russia", tr: "Rusya", emoji: "🇷🇺", sEn: "Russia is very large.", sTr: "Rusya çok geniştir." },
+{ en: "Egypt", tr: "Mısır", emoji: "🇪🇬", sEn: "Egypt has pyramids.", sTr: "Mısır'ın piramitleri var." }
+]},
+12: { title: "🥦 SEBZELER = VEGETABLES", data: [
+{ en: "Potato", tr: "Patates", emoji: "🥔", sEn: "I like fried potatoes.", sTr: "Kızarmış patatesi severim." },
+{ en: "Tomato", tr: "Domates", emoji: "🍅", sEn: "The tomato is red.", sTr: "Domates kırmızıdır." },
+{ en: "Carrot", tr: "Havuç", emoji: "🥕", sEn: "Rabbits love carrots.", sTr: "Tavşanlar havucu sever." },
+{ en: "Broccoli", tr: "Brokoli", emoji: "🥦", sEn: "Broccoli is healthy.", sTr: "Brokoli sağlıklıdır." },
+{ en: "Eggplant", tr: "Patlıcan", emoji: "🍆", sEn: "The eggplant is purple.", sTr: "Patlıcan mordur." },
+{ en: "Corn", tr: "Mısır", emoji: "🌽", sEn: "Sweet corn is tasty.", sTr: "Tatlı mısır lezzetlidir." },
+{ en: "Onion", tr: "Soğan", emoji: "🧅", sEn: "Cutting onions makes me cry.", sTr: "Soğan doğramak beni ağlatır." },
+{ en: "Garlic", tr: "Sarımsak", emoji: "🧄", sEn: "Garlic smells strong.", sTr: "Sarımsak sert kokar." },
+{ en: "Cucumber", tr: "Salatalık", emoji: "🥒", sEn: "The cucumber is green.", sTr: "Salatalık yeşildir." },
+{ en: "Pepper", tr: "Biber", emoji: "🫑", sEn: "Is the pepper spicy?", sTr: "Biber acı mı?" },
+{ en: "Mushroom", tr: "Mantar", emoji: "🍄", sEn: "Mushrooms grow in forests.", sTr: "Mantarlar ormanda yetişir." },
+{ en: "Pumpkin", tr: "Kabak", emoji: "🎃", sEn: "Pumpkin is for soup.", sTr: "Kabak çorba içindir." }
+]},
+13: { title: "✏️ KIRTASİYE = STATIONERY", data: [
+{ en: "Pen", tr: "Kalem", emoji: "🖊️", sEn: "Write with a pen.", sTr: "Kalemle yaz." },
+{ en: "Pencil", tr: "Kurşun Kalem", emoji: "✏️", sEn: "Sharpen the pencil.", sTr: "Kalemi aç." },
+{ en: "Eraser", tr: "Silgi", emoji: "🧼", sEn: "Use the eraser.", sTr: "Silgiyi kullan." },
+{ en: "Notebook", tr: "Defter", emoji: "📓", sEn: "Open your notebook.", sTr: "Defterini aç." },
+{ en: "Ruler", tr: "Cetvel", emoji: "📏", sEn: "The ruler is long.", sTr: "Cetvel uzundur." },
+{ en: "Scissors", tr: "Makas", emoji: "✂️", sEn: "Be careful with scissors.", sTr: "Makasla dikkatli ol." },
+{ en: "Glue", tr: "Yapıştırıcı", emoji: "🧪", sEn: "Stick it with glue.", sTr: "Yapıştırıcıyla yapıştır." },
+{ en: "Paper", tr: "Kağıt", emoji: "📄", sEn: "A white paper.", sTr: "Beyaz bir kağıt." },
+{ en: "Backpack", tr: "Sırt Çantası", emoji: "🎒", sEn: "My backpack is heavy.", sTr: "Çantam ağır." },
+{ en: "Crayon", tr: "Pastel Boya", emoji: "🖍️", sEn: "Color with crayons.", sTr: "Pastel boyayla boya." },
+{ en: "Map", tr: "Harita", emoji: "🗺️", sEn: "Look at the map.", sTr: "Haritaya bak." },
+{ en: "Desk", tr: "Sıra", emoji: "🪑", sEn: "Sit at your desk.", sTr: "Sırana otur." }
+]},
+14: { title: "⚽ SPOR = SPORTS", data: [
+{ en: "Football", tr: "Futbol", emoji: "⚽", sEn: "I play football.", sTr: "Futbol oynarım." },
+{ en: "Basketball", tr: "Basketbol", emoji: "🏀", sEn: "He is tall for basketball.", sTr: "Basketbol için boyu uzun." },
+{ en: "Tennis", tr: "Tenis", emoji: "🎾", sEn: "Tennis is fun.", sTr: "Tenis eğlencelidir." },
+{ en: "Swimming", tr: "Yüzme", emoji: "🏊", sEn: "I love swimming.", sTr: "Yüzmeyi severim." },
+{ en: "Running", tr: "Koşu", emoji: "🏃", sEn: "Running is healthy.", sTr: "Koşmak sağlıklıdır." },
+{ en: "Cycling", tr: "Bisiklet", emoji: "🚴", sEn: "Cycling to school.", sTr: "Okula bisikletle gitmek." },
+{ en: "Boxing", tr: "Boks", emoji: "🥊", sEn: "Boxing is hard.", sTr: "Boks zordur." },
+{ en: "Golf", tr: "Golf", emoji: "⛳", sEn: "Golf is a slow sport.", sTr: "Golf yavaş bir spordur." },
+{ en: "Skiing", tr: "Kayak", emoji: "🎿", sEn: "Skiing in winter.", sTr: "Kışın kayak yapmak." },
+{ en: "Yoga", tr: "Yoga", emoji: "🧘", sEn: "Yoga is relaxing.", sTr: "Yoga rahatlatıcıdır." },
+{ en: "Bowling", tr: "Bowling", emoji: "🎳", sEn: "Let's go bowling.", sTr: "Bowlinge gidelim." },
+{ en: "Skating", tr: "Paten", emoji: "⛸️", sEn: "Ice skating is cool.", sTr: "Buz pateni havalıdır." }
+]},
+15: { title: "🍳 MUTFAK = KITCHEN", data: [
+{ en: "Fork", tr: "Çatal", emoji: "🍴", sEn: "Use a fork.", sTr: "Çatal kullan." },
+{ en: "Spoon", tr: "Kaşık", emoji: "🥄", sEn: "Soup needs a spoon.", sTr: "Çorba için kaşık gerekir." },
+{ en: "Knife", tr: "Bıçak", emoji: "🔪", sEn: "The knife is sharp.", sTr: "Bıçak keskindir." },
+{ en: "Plate", tr: "Tabak", emoji: "🍽️", sEn: "Put it on the plate.", sTr: "Tabağa koy." },
+{ en: "Glass", tr: "Bardak", emoji: "🥛", sEn: "A glass of water.", sTr: "Bir bardak su." },
+{ en: "Pot", tr: "Tencere", emoji: "🍲", sEn: "The pot is hot.", sTr: "Tencere sıcaktır." },
+{ en: "Pan", tr: "Tava", emoji: "🍳", sEn: "Fry an egg in the pan.", sTr: "Tavada yumurta pişir." },
+{ en: "Cup", tr: "Fincan", emoji: "☕", sEn: "A cup of tea.", sTr: "Bir fincan çay." },
+{ en: "Fridge", tr: "Buzdolabı", emoji: "🧊", sEn: "Milk is in the fridge.", sTr: "Süt buzdolabında." },
+{ en: "Oven", tr: "Fırın", emoji: "🍞", sEn: "Bake a cake in the oven.", sTr: "Fırında kek pişir." },
+{ en: "Bowl", tr: "Kase", emoji: "🥣", sEn: "A bowl of cereal.", sTr: "Bir kase gevrek." },
+{ en: "Sink", tr: "Lavabo", emoji: "🚰", sEn: "Wash dishes in the sink.", sTr: "Bulaşıkları lavaboda yıka." }
+]},
+16: { title: "📚 DERSLER = SCHOOL SUBJECTS", data: [
+{ en: "Math", tr: "Matematik", emoji: "🔢", sEn: "I solve math problems.", sTr: "Matematik problemleri çözerim." },
+{ en: "Science", tr: "Fen Bilimleri", emoji: "🧪", sEn: "We do experiments.", sTr: "Deneyler yaparız." },
+{ en: "History", tr: "Tarih", emoji: "📜", sEn: "History is about the past.", sTr: "Tarih geçmişle ilgilidir." },
+{ en: "Geography", tr: "Coğrafya", emoji: "🗺️", sEn: "We learn about maps.", sTr: "Haritalar hakkında öğreniriz." },
+{ en: "English", tr: "İngilizce", emoji: "🇬🇧", sEn: "I speak English.", sTr: "İngilizce konuşurum." },
+{ en: "Art", tr: "Görsel Sanatlar", emoji: "🎨", sEn: "I like painting.", sTr: "Resim yapmayı severim." },
+{ en: "Music", tr: "Müzik", emoji: "🎵", sEn: "I play the piano.", sTr: "Piyano çalarım." },
+{ en: "Physical Education", tr: "Beden Eğitimi", emoji: "🏀", sEn: "We play sports.", sTr: "Spor yaparız." },
+{ en: "Reading", tr: "Okuma", emoji: "📖", sEn: "Reading is fun.", sTr: "Okumak eğlencelidir." },
+{ en: "Writing", tr: "Yazma", emoji: "✍️", sEn: "Practice your writing.", sTr: "Yazma pratiği yap." },
+{ en: "Computer Class", tr: "Bilişim", emoji: "💻", sEn: "We use computers.", sTr: "Bilgisayar kullanırız." },
+{ en: "Social Studies", tr: "Sosyal Bilgiler", emoji: "👨‍👩‍👧‍👦", sEn: "We learn about society.", sTr: "Toplum hakkında öğreniriz." }
+]},
+17: { title: "💼 MESLEKLER = JOBS", data: [
+{ en: "Doctor", tr: "Doktor", emoji: "👨‍⚕️", sEn: "The doctor helps patients.", sTr: "Doktor hastalara yardım eder." },
+{ en: "Teacher", tr: "Öğretmen", emoji: "👩‍🏫", sEn: "The teacher is at school.", sTr: "Öğretmen okuldadır." },
+{ en: "Firefighter", tr: "İtfaiyeci", emoji: "👩‍🚒", sEn: "Firefighters put out fires.", sTr: "İtfaiyeciler yangın söndürür." },
+{ en: "Pilot", tr: "Pilot", emoji: "👨‍✈️", sEn: "The pilot flies the plane.", sTr: "Pilot uçağı uçurur." },
+{ en: "Chef", tr: "Aşçı", emoji: "👨‍🍳", sEn: "The chef cooks dinner.", sTr: "Aşçı akşam yemeğini pişirir." },
+{ en: "Farmer", tr: "Çiftçi", emoji: "👨‍🌾", sEn: "The farmer has a tractor.", sTr: "Çiftçinin bir traktörü var." },
+{ en: "Police Officer", tr: "Polis", emoji: "👮", sEn: "The police help people.", sTr: "Polis insanlara yardım eder." },
+{ en: "Dentist", tr: "Diş Hekimi", emoji: "🦷", sEn: "Go to the dentist.", sTr: "Diş hekimine git." },
+{ en: "Artist", tr: "Sanatçı", emoji: "🎨", sEn: "The artist paints.", sTr: "Sanatçı resim yapar." },
+{ en: "Astronaut", tr: "Astronot", emoji: "👨‍🚀", sEn: "Astronauts go to space.", sTr: "Astronotlar uzaya gider." },
+{ en: "Singer", tr: "Şarkıcı", emoji: "👩‍🎤", sEn: "She is a good singer.", sTr: "O iyi bir şarkıcıdır." },
+{ en: "Baker", tr: "Fırıncı", emoji: "🥖", sEn: "The baker makes bread.", sTr: "Fırıncı ekmek yapar." }
+]},
+18: { title: "🎭 DUYGULAR = EMOTIONS", data: [
+{ en: "Happy", tr: "Mutlu", emoji: "😊", sEn: "I am very happy.", sTr: "Çok mutluyum." },
+{ en: "Sad", tr: "Üzgün", emoji: "😢", sEn: "Don't be sad.", sTr: "Üzgün olma." },
+{ en: "Angry", tr: "Kızgın", emoji: "😠", sEn: "He is angry.", sTr: "O kızgın." },
+{ en: "Surprised", tr: "Şaşırmış", emoji: "😲", sEn: "I am surprised!", sTr: "Şaşırdım!" },
+{ en: "Scared", tr: "Korkmuş", emoji: "😨", sEn: "I am scared of ghosts.", sTr: "Hayaletlerden korkarım." },
+{ en: "Sleepy", tr: "Uykulu", emoji: "😴", sEn: "I am sleepy.", sTr: "Uykum var." },
+{ en: "Hungry", tr: "Aç", emoji: "😋", sEn: "I am hungry.", sTr: "Açım." },
+{ en: "Thirsty", tr: "Susamış", emoji: "🥤", sEn: "I am thirsty.", sTr: "Susadım." },
+{ en: "Bored", tr: "Sıkılmış", emoji: "😑", sEn: "I am bored.", sTr: "Sıkıldım." },
+{ en: "Excited", tr: "Heyecanlı", emoji: "🤩", sEn: "I am so excited!", sTr: "Çok heyecanlıyım!" },
+{ en: "Sick", tr: "Hasta", emoji: "🤒", sEn: "I feel sick.", sTr: "Hasta hissediyorum." },
+{ en: "Tired", tr: "Yorgun", emoji: "😫", sEn: "I am tired.", sTr: "Yorgunum." }
+]},
+19: { title: "🍔 YİYECEKLER = FOODS", data: [
+{ en: "Bread", tr: "Ekmek", emoji: "🍞", sEn: "Eat some bread.", sTr: "Biraz ekmek ye." },
+{ en: "Egg", tr: "Yumurta", emoji: "🥚", sEn: "Boil an egg.", sTr: "Yumurta haşla." },
+{ en: "Cheese", tr: "Peynir", emoji: "🧀", sEn: "I like cheese.", sTr: "Peyniri severim." },
+{ en: "Milk", tr: "Süt", emoji: "🥛", sEn: "Drink your milk.", sTr: "Sütünü iç." },
+{ en: "Chicken", tr: "Tavuk", emoji: "🍗", sEn: "Roasted chicken.", sTr: "Kızarmış tavuk." },
+{ en: "Rice", tr: "Pirinç/Pilav", emoji: "🍚", sEn: "Eat rice.", sTr: "Pilav ye." },
+{ en: "Soup", tr: "Çorba", emoji: "🥣", sEn: "Hot soup.", sTr: "Sıcak çorba." },
+{ en: "Pizza", tr: "Pizza", emoji: "🍕", sEn: "I love pizza.", sTr: "Pizzaya bayılırım." },
+{ en: "Hamburger", tr: "Hamburger", emoji: "🍔", sEn: "Big hamburger.", sTr: "Büyük hamburger." },
+{ en: "Ice Cream", tr: "Dondurma", emoji: "🍦", sEn: "Cold ice cream.", sTr: "Soğuk dondurma." },
+{ en: "Cake", tr: "Kek", emoji: "🍰", sEn: "Sweet cake.", sTr: "Tatlı kek." },
+{ en: "Pasta", tr: "Makarna", emoji: "🍝", sEn: "Tomato pasta.", sTr: "Domatesli makarna." }
+]},
+20: { title: "🛁 GÜNLÜK RUTİN = DAILY ROUTINE", data: [
+{ en: "Wake up", tr: "Uyanmak", emoji: "⏰", sEn: "I wake up early.", sTr: "Erken uyanırım." },
+{ en: "Wash face", tr: "Yüz yıkamak", emoji: "💦", sEn: "Wash your face.", sTr: "Yüzünü yıka." },
+{ en: "Brush teeth", tr: "Diş fırçalamak", emoji: "🪥", sEn: "Brush your teeth.", sTr: "Dişlerini fırçala." },
+{ en: "Have breakfast", tr: "Kahvaltı yapmak", emoji: "🍳", sEn: "Eat breakfast.", sTr: "Kahvaltı yap." },
+{ en: "Go to school", tr: "Okula gitmek", emoji: "🏫", sEn: "Go to school.", sTr: "Okula git." },
+{ en: "Read", tr: "Okumak", emoji: "📖", sEn: "Read a book.", sTr: "Kitap oku." },
+{ en: "Play", tr: "Oynamak", emoji: "⚽", sEn: "Play with friends.", sTr: "Arkadaşlarınla oyna." },
+{ en: "Study", tr: "Ders çalışmak", emoji: "✍️", sEn: "Study hard.", sTr: "Sıkı çalış." },
+{ en: "Eat dinner", tr: "Yemek yemek", emoji: "🍽️", sEn: "Eat your dinner.", sTr: "Yemeğini ye." },
+{ en: "Take a shower", tr: "Duş almak", emoji: "🚿", sEn: "Take a shower.", sTr: "Duş al." },
+{ en: "Sleep", tr: "Uyumak", emoji: "😴", sEn: "Go to sleep.", sTr: "Uyu." },
+{ en: "Listen to music", tr: "Müzik dinlemek", emoji: "🎧", sEn: "Listen to music.", sTr: "Müzik dinle." }
+]},
+21: { title: "🌳 DOĞA = NATURE", data: [
+{ en: "Tree", tr: "Ağaç",   emoji: "🌳", sEn: "The tree is tall.", sTr: "Ağaç uzundur." },
+{ en: "Flower", tr: "Çiçek", emoji: "🌸", sEn: "Beautiful flower.", sTr: "Güzel çiçek." },
+{ en: "Mountain", tr: "Dağ", emoji: "⛰️", sEn: "High mountain.", sTr: "Yüksek dağ." },
+{ en: "River", tr: "Nehir", emoji: "🏞️", sEn: "The river flows.", sTr: "Nehir akar." },
+{ en: "Sea", tr: "Deniz", emoji: "🌊", sEn: "Blue sea.", sTr: "Mavi deniz." },
+{ en: "Grass", tr: "Çimen", emoji: "🌱", sEn: "Green grass.", sTr: "Yeşil çimen." },
+{ en: "Forest", tr: "Orman", emoji: "🌲", sEn: "Animals live in forests.", sTr: "Hayvanlar ormanda yaşar." },
+{ en: "Rain", tr: "Yağmur", emoji: "🌧️", sEn: "I like rain.", sTr: "Yağmuru severim." },
+{ en: "Snow", tr: "Kar", emoji: "❄️", sEn: "White snow.", sTr: "Beyaz kar." },
+{ en: "Leaf", tr: "Yaprak", emoji: "🍃", sEn: "A green leaf.", sTr: "Yeşil bir yaprak." },
+{ en: "Sand", tr: "Kum", emoji: "🏖️", sEn: "Beach sand.", sTr: "Plaj kumu." },
+{ en: "Island", tr: "Ada", emoji: "🏝️", sEn: "Small island.", sTr: "Küçük ada." }
+]},
+22: { title: "👂 DUYULARIMIZ = FIVE SENSES", data: [
+{ en: "See", tr: "Görmek", emoji: "👁️", sEn: "I see a bird.", sTr: "Bir kuş görüyorum." },
+{ en: "Hear", tr: "Duymak", emoji: "👂", sEn: "I hear a sound.", sTr: "Bir ses duyuyorum." },
+{ en: "Smell", tr: "Koklamak", emoji: "👃", sEn: "I smell flowers.", sTr: "Çiçekleri kokluyorum." },
+{ en: "Taste", tr: "Tatmak", emoji: "👅", sEn: "Taste the cake.", sTr: "Kekin tadına bak." },
+{ en: "Touch", tr: "Dokunmak", emoji: "✋", sEn: "Don't touch that!", sTr: "Ona dokunma!" },
+{ en: "Listen", tr: "Dinlemek", emoji: "🎧", sEn: "Listen to me.", sTr: "Beni dinle." },
+{ en: "Look", tr: "Bakmak", emoji: "👀", sEn: "Look at the stars.", sTr: "Yıldızlara bak." },
+{ en: "Soft", tr: "Yumuşak", emoji: "🧸", sEn: "It is soft.", sTr: "O yumuşaktır." },
+{ en: "Hard", tr: "Sert", emoji: "🪨", sEn: "The rock is hard.", sTr: "Kaya serttir." },
+{ en: "Sweet", tr: "Tatlı", emoji: "🍭", sEn: "Candy is sweet.", sTr: "Şeker tatlıdır." },
+{ en: "Sour", tr: "Ekşi", emoji: "🍋", sEn: "Lemon is sour.", sTr: "Limon ekşidir." },
+{ en: "Cold", tr: "Soğuk", emoji: "🧊", sEn: "The water is cold.", sTr: "Su soğuktur." }
+]},
+23: { title: "↔️ ZIT ANLAMLILAR = OPPOSITES", data: [
+{ en: "Big", tr: "Büyük", emoji: "🐘", sEn: "An elephant is big.", sTr: "Bir fil büyüktür." },
+{ en: "Small", tr: "Küçük", emoji: "🐭", sEn: "A mouse is small.", sTr: "Bir fare küçüktür." },
+{ en: "Fast", tr: "Hızlı", emoji: "🏎️", sEn: "The car is fast.", sTr: "Araba hızlıdır." },
+{ en: "Slow", tr: "Yavaş", emoji: "🐢", sEn: "The turtle is slow.", sTr: "Kaplumbağa yavaştır." },
+{ en: "Hot", tr: "Sıcak", emoji: "🔥", sEn: "The sun is hot.", sTr: "Güneş sıcaktır." },
+{ en: "Cold", tr: "Soğuk", emoji: "❄️", sEn: "Snow is cold.", sTr: "Kar soğuktur." },
+{ en: "Tall", tr: "Uzun", emoji: "🦒", sEn: "The giraffe is tall.", sTr: "Zürafa uzundur." },
+{ en: "Short", tr: "Kısa", emoji: "🚶", sEn: "He is short.", sTr: "O kısadır." },
+{ en: "Full", tr: "Dolu", emoji: "🥤", sEn: "The glass is full.", sTr: "Bardak doludur." },
+{ en: "Empty", tr: "Boş", emoji: "🥛", sEn: "The bottle is empty.", sTr: "Şişe boştur." },
+{ en: "Old", tr: "Eski/Yaşlı", emoji: "👴", sEn: "The man is old.", sTr: "Adam yaşlıdır." },
+{ en: "New", tr: "Yeni", emoji: "🎁", sEn: "I have a new toy.", sTr: "Yeni bir oyuncağım var." }
+]},
+24: { title: "🎨 HOBİLER = HOBBIES", data: [
+{ en: "Drawing", tr: "Resim Çizmek", emoji: "✍️", sEn: "I love drawing.", sTr: "Resim çizmeyi severim." },
+{ en: "Reading", tr: "Kitap Okumak", emoji: "📚", sEn: "Reading is fun.", sTr: "Okumak eğlencelidir." },
+{ en: "Dancing", tr: "Dans Etmek", emoji: "💃", sEn: "Let's dance!", sTr: "Hadi dans edelim!" },
+{ en: "Photography", tr: "Fotoğrafçılık", emoji: "📷", sEn: "Take a photo.", sTr: "Bir fotoğraf çek." },
+{ en: "Cooking", tr: "Yemek Pişirmek", emoji: "👨‍🍳", sEn: "I like cooking.", sTr: "Yemek yapmayı severim." },
+{ en: "Gardening", tr: "Bahçıvanlık", emoji: "🌻", sEn: "Planting flowers.", sTr: "Çiçek dikmek." },
+{ en: "Fishing", tr: "Balık Tutmak", emoji: "🎣", sEn: "Go fishing.", sTr: "Balık tutmaya git." },
+{ en: "Chess", tr: "Satranç", emoji: "♟️", sEn: "Play chess.", sTr: "Satranç oyna." },
+{ en: "Traveling", tr: "Seyahat Etmek", emoji: "🌍", sEn: "I like traveling.", sTr: "Gezmeyi severim." },
+{ en: "Video Games", tr: "Video Oyunları", emoji: "🎮", sEn: "I play games.", sTr: "Oyun oynarım." },
+{ en: "Singing", tr: "Şarkı Söylemek", emoji: "🎤", sEn: "Sing a song.", sTr: "Şarkı söyle." },
+{ en: "Swimming", tr: "Yüzme", emoji: "🏊", sEn: "Swimming in summer.", sTr: "Yazın yüzmek." }
+]},
+25: { title: "🏘️ EVİN BÖLÜMLERİ = ROOMS OF THE HOUSE", data: [
+{ en: "Living Room", tr: "Oturma Odası", emoji: "🛋️", sEn: "Watch TV in the living room.", sTr: "Oturma odasında TV izle." },
+{ en: "Kitchen", tr: "Mutfak", emoji: "🍳", sEn: "Cook in the kitchen.", sTr: "Mutfakta yemek yap." },
+{ en: "Bedroom", tr: "Yatak Odası", emoji: "🛏️", sEn: "Sleep in the bedroom.", sTr: "Yatak odasında uyu." },
+{ en: "Bathroom", tr: "Banyo", emoji: "🚿", sEn: "Wash in the bathroom.", sTr: "Banyoda yıkan." },
+{ en: "Garden", tr: "Bahçe", emoji: "🌳", sEn: "Play in the garden.", sTr: "Bahçede oyna." },
+{ en: "Garage", tr: "Garaj", emoji: "🚗", sEn: "Park the car in the garage.", sTr: "Arabayı garaja park et." },
+{ en: "Balcony", tr: "Balkon", emoji: "🌅", sEn: "Sit on the balcony.", sTr: "Balkonda otur." },
+{ en: "Dining Room", tr: "Yemek Odası", emoji: "🍽️", sEn: "Eat in the dining room.", sTr: "Yemek odasında yemek ye." },
+{ en: "Stairs", tr: "Merdivenler", emoji: "🪜", sEn: "Go up the stairs.", sTr: "Merdivenlerden yukarı çık." },
+{ en: "Roof", tr: "Çatı", emoji: "🏠", sEn: "The roof is red.", sTr: "Çatı kırmızıdır." },
+{ en: "Window", tr: "Pencere", emoji: "🪟", sEn: "Open the window.", sTr: "Pencereyi aç." },
+{ en: "Wall", tr: "Duvar", emoji: "🧱", sEn: "The wall is white.", sTr: "Duvar beyazdır." }
+]}
+};
+
+
+
+let currentLevel = 1;
+
+let clickedCards = new Set();
+
+let selectedEmoji = null;
+
+let selectedWord = null;
+
+let solvedMatches = 0;
+
+
+
+function toggleTheme() {
+
+const body = document.body;
+
+body.classList.toggle('light-mode');
+
+const isLight = body.classList.contains('light-mode');
+
+document.getElementById('theme-toggle').innerText = isLight ? "☀️ AYDINLIK MOD" : "🌙 KARANLIK MOD";
+
+}
+
+
+
+function speak(text) {
+
+window.speechSynthesis.cancel();
+
+const utter = new SpeechSynthesisUtterance(text);
+
+utter.lang = 'en-US'; utter.rate = 0.9;
+
+window.speechSynthesis.speak(utter);
+
+}
+
+
+
+function startMission() {
+
+document.getElementById('intro').classList.add('hidden');
+
+document.getElementById('top-bar').style.display = 'flex';
+
+document.getElementById('game-area').style.display = 'grid';
+
+renderLevel();
+
+}
+
+
+
+function renderLevel() {
+
+const container = document.getElementById('game-area');
+
+const currentCategory = levels[currentLevel];
+
+container.innerHTML = ''; clickedCards.clear();
+
+document.getElementById('quiz-area').style.display = 'none';
+
+document.getElementById('next-level-container').style.display = 'none';
+
+document.getElementById('game-area').style.display = 'grid';
+
+document.getElementById('level-indicator').innerText = currentCategory.title;
+
+document.getElementById('btn-back').disabled = (currentLevel === 1);
+
+
+
+currentCategory.data.forEach((item, index) => {
+
+const card = document.createElement('div');
+
+card.className = 'card';
+
+card.innerHTML = `
+
+<span class="emoji" style="font-size:4rem;">${item.emoji}</span>
+
+<span class="word-tr-main" style="font-weight:bold;">${item.tr}</span>
+
+<div class="info-panel" id="info-${index}">
+
+<span style="font-size:1.8rem; color:var(--neon-pink); display:block;">${item.en}</span>
+
+<span style="color:var(--neon-yellow); font-style:italic;">"${item.sEn}"</span>
+
+<p style="font-size:0.9rem; color:#aaa; font-style:italic; margin-top:5px;">(${item.sTr})</p>
+
+</div>
+
+`;
+
+card.onclick = () => {
+
+if(!clickedCards.has(index)) {
+
+card.classList.add('discovered');
+
+speak(item.en);
+
+document.getElementById(`info-${index}`).style.display = 'block';
+
+clickedCards.add(index);
+
+checkProgress();
+
+} else { speak(item.en); }
+
+};
+
+container.appendChild(card);
+
+});
+
+}
+
+
+
+function checkProgress() {
+
+if(clickedCards.size === levels[currentLevel].data.length) {
+
+setTimeout(() => {
+
+document.getElementById('congrats-text').innerText = `Tebrikler! ${levels[currentLevel].title} Tamamlandı! 🏆`;
+
+document.getElementById('next-level-container').style.display = 'block';
+
+document.getElementById('btn-quiz-start').classList.remove('hidden');
+
+document.getElementById('btn-next-level').classList.add('hidden');
+
+confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+}, 800);
+
+}
+
+}
+
+
+
+function showQuiz() {
+
+document.getElementById('game-area').style.display = 'none';
+
+document.getElementById('quiz-area').style.display = 'block';
+
+document.getElementById('btn-quiz-start').classList.add('hidden');
+
+
+
+const categoryData = levels[currentLevel].data;
+
+const shuffled = [...categoryData].sort(() => 0.5 - Math.random()).slice(0, 4);
+
+const emojis = [...shuffled].sort(() => 0.5 - Math.random());
+
+const words = [...shuffled].sort(() => 0.5 - Math.random());
+
+
+
+const emojiCol = document.getElementById('quiz-emojis');
+
+const wordCol = document.getElementById('quiz-words');
+
+emojiCol.innerHTML = ''; wordCol.innerHTML = '';
+
+solvedMatches = 0;
+
+
+
+emojis.forEach(item => {
+
+const div = document.createElement('div');
+
+div.className = 'quiz-item';
+
+div.innerText = item.emoji;
+
+div.onclick = () => selectItem(div, item.en, 'emoji');
+
+emojiCol.appendChild(div);
+
+});
+
+
+
+words.forEach(item => {
+
+const div = document.createElement('div');
+
+div.className = 'quiz-item';
+
+div.innerText = item.en;
+
+div.onclick = () => selectItem(div, item.en, 'word');
+
+wordCol.appendChild(div);
+
+});
+
+}
+
+
+
+function selectItem(el, val, type) {
+
+if(el.classList.contains('correct')) return;
+
+
+
+if(type === 'emoji') {
+
+document.querySelectorAll('#quiz-emojis .quiz-item').forEach(i => i.classList.remove('selected'));
+
+selectedEmoji = { el, val };
+
+} else {
+
+document.querySelectorAll('#quiz-words .quiz-item').forEach(i => i.classList.remove('selected'));
+
+selectedWord = { el, val };
+
+}
+
+el.classList.add('selected');
+
+
+
+if(selectedEmoji && selectedWord) {
+
+if(selectedEmoji.val === selectedWord.val) {
+
+selectedEmoji.el.classList.add('correct');
+
+selectedWord.el.classList.add('correct');
+
+speak("Correct!");
+
+solvedMatches++;
+
+if(solvedMatches === 4) {
+
+confetti({ particleCount: 100, colors: ['#39ff14'] });
+
+document.getElementById('btn-next-level').classList.remove('hidden');
+
+speak("Great job! You are ready for the next level.");
+
+}
+
+} else {
+
+// --- YANLIŞ CEVAP DURUMU ---
+
+const e = selectedEmoji.el; 
+
+const w = selectedWord.el;
+
+e.classList.add('wrong');
+
+w.classList.add('wrong');
+
+speak("Wrong! Try again."); // Sesli uyarı
+
+
+
+setTimeout(() => { 
+
+    e.classList.remove('selected', 'wrong'); 
+
+    w.classList.remove('selected', 'wrong'); 
+
+}, 400);
+
+}
+
+selectedEmoji = null; selectedWord = null;
+
+}
+
+}
+
+
+
+function nextLevel() {
+    if(levels[currentLevel + 1]) {
+        currentLevel++;
+        renderLevel();
+    } else {
+        alert("TEBRİKLER! Tüm 25 seviyeyi bitirdin ve 300 kelime öğrendin! 🏆");
+        currentLevel = 1; 
+        renderLevel();
+    }
+}
+
+
+
+function prevLevel() { if(currentLevel > 1) { currentLevel--; renderLevel(); } }
+
+function skipLevel() { nextLevel(); }
+
+</script>
+
+</body>
+
+</html>
